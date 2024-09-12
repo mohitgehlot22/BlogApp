@@ -26,7 +26,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import React, { useEffect, useState, FormEvent } from "react";
+import React, { useEffect, useState, FormEvent, useCallback } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
@@ -36,10 +36,9 @@ import { Input } from "@/components/ui/input";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TopButton from "@/components/WebComponents/TopButton";
-import { useSession } from "next-auth/react"
+import { useSession } from "next-auth/react";
 
 export default function ViewBlogsData() {
-
   const [BlogData, SetBlogData] = useState<BlogDataType[]>([]);
   const [DeleteId, SetDeleteId] = useState<string | null>(null);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
@@ -47,10 +46,10 @@ export default function ViewBlogsData() {
   const [Categories, setCategories] = useState<string[]>([]);
   const [CategoriesValue, setCategoriesValue] = useState("All");
   const { data: session } = useSession();
-
   const email = session?.user.email;
 
-  const ViewBlogs = () => {
+  // UseCallback for ViewBlogs to avoid unnecessary re-renders
+  const ViewBlogs = useCallback(() => {
     axios
       .get(`/api/BlogsPost?limit=1000`)
       .then((res) => {
@@ -63,7 +62,7 @@ export default function ViewBlogsData() {
         console.log("Error fetching blogs:", error);
         toast.error("Error fetching blog data!");
       });
-  };
+  }, [email]);
 
   const HandleDelete = () => {
     if (DeleteId) {
@@ -92,16 +91,16 @@ export default function ViewBlogsData() {
       .get(`api/CategoryPost?query=${CategoriesValue}`)
       .then((res) => {
         SetBlogData(
-          res.data.data.filter((value: BlogData) => value.email == email)
+          res.data.data.filter((value: BlogData) => value.email === email)
         );
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [CategoriesValue]);
+  }, [CategoriesValue, email]);
 
   useEffect(() => {
-    ViewBlogs();
+    ViewBlogs(); // Calling ViewBlogs inside useEffect
     axios
       .get(`/api/Categories`)
       .then((res) => {
@@ -110,7 +109,7 @@ export default function ViewBlogsData() {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [ViewBlogs]);
 
   useEffect(() => {
     if (Searchvalue) {
@@ -118,7 +117,7 @@ export default function ViewBlogsData() {
         .get(`/api/SearchPost?query=${Searchvalue}`)
         .then((res) => {
           SetBlogData(
-            res.data.filter((value: BlogData) => value.email == email)
+            res.data.filter((value: BlogData) => value.email === email)
           );
         })
         .catch((error) => {
@@ -127,9 +126,9 @@ export default function ViewBlogsData() {
     } else {
       ViewBlogs();
     }
-  }, [Searchvalue]);
+  }, [Searchvalue, ViewBlogs, email]);
 
-  return  (
+  return (
     <>
       <TopButton />
       <div className="w-full h-screen p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md">
@@ -256,24 +255,21 @@ export default function ViewBlogsData() {
         <AlertDialog open={openAlert} onOpenChange={setOpenAlert}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogTitle>
+                Are you sure you want to delete this blog?
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                blog post.
+                This action cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => setOpenAlert(false)}>
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction onClick={HandleDelete}>
-                Delete
-              </AlertDialogAction>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={HandleDelete}>Delete</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-        <ToastContainer />
       </div>
+      <ToastContainer />
     </>
-  ) 
+  );
 }

@@ -2,13 +2,12 @@ import { BlogData } from "@/types/definition";
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import { authOptions } from "@/lib/auth";  // Replace this with the actual path to your `authOptions`
+import { authOptions } from "@/lib/auth";  
 
 const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
   try {
-
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user?.email) {
@@ -23,7 +22,7 @@ export async function GET(request: NextRequest) {
 
     const categories = await prisma.blog.findMany({
       where: {
-        email, 
+        email,
       },
       select: {
         category: true,
@@ -31,12 +30,16 @@ export async function GET(request: NextRequest) {
       distinct: ['category'],
     });
 
+    // Define a type for the category items
+    type CategoryItem = { category: string | null };
+
+    // Ensure the items in the categories array are typed correctly
     const uniqueCategories = Array.from(
       new Set(
         categories
-          .map((item) => item.category)
+          .map((item: CategoryItem) => item.category) // Explicitly type the `item`
           .filter((category): category is string => typeof category === 'string' && category.trim() !== '')
-          .map((category) => category.trim().toLowerCase()) 
+          .map((category) => category.trim().toLowerCase())
       )
     );
 

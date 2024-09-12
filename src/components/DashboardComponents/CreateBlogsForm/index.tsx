@@ -75,7 +75,7 @@ export default function CreateBlogsForm() {
         })
         .catch((error) => console.error("Failed to fetch blog data:", error));
     }
-  }, [postId, form.reset]); // Use form.reset as the dependency
+  }, [postId, form]); // Add 'form' to the dependency array
 
   const handleSubmit = async (data: FormData) => {
     const formData = new FormData();
