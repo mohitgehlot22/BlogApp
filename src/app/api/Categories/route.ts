@@ -37,10 +37,10 @@ export async function GET(request: NextRequest) {
       new Set(
         categories
           .map((item: any) => item.category)
-          .filter((category): category is string => {
+          .filter((category : any): category is string => {
             return typeof category === "string" && category.trim() !== "";
           })
-          .map((category) => category.trim().toLowerCase())
+          .map((category : any) => category.trim().toLowerCase())
       )
     );
 
