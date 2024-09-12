@@ -9,8 +9,9 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import React from 'react';
 
-export  const  ProfileViewPort = ()=> {
+export  const  ProfileViewPort : any =  ()=> {
   const [profileData, setProfileData] = useState<Profile | null>(null);
   const { data: session, status } = useSession();
   const router = useRouter()
