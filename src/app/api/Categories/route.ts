@@ -1,4 +1,3 @@
-import { BlogData } from "@/types/definition";
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -38,7 +37,10 @@ export async function GET(request: NextRequest) {
       new Set(
         categories
           .map((item: CategoryItem) => item.category) // Explicitly type the `item`
-          .filter((category): category is string => typeof category === 'string' && category.trim() !== '')
+          .filter((category): category is string => {
+            // Ensure category is not null and is a string
+            return typeof category === 'string' && category.trim() !== '';
+          })
           .map((category) => category.trim().toLowerCase())
       )
     );
