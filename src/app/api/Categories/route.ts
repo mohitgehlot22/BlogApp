@@ -36,11 +36,11 @@ export async function GET(request: NextRequest) {
     const uniqueCategories = Array.from(
       new Set(
         categories
-          .map((item: CategoryItem) => item.category)
-          .filter((category: string | null): category is string => {
+          .map((item: any) => item.category)
+          .filter((category): category is string => {
             return typeof category === "string" && category.trim() !== "";
           })
-          .map((category: string) => category.trim().toLowerCase())
+          .map((category) => category.trim().toLowerCase())
       )
     );
 
