@@ -5,6 +5,7 @@ import { BlogData, BlogDetailsProps } from "@/types/definition";
 import LoadingSpinner from "@/components/DashboardComponents/Loadingspinner";
 import UserProfile from "@/components/WebComponents/UserProfile";
 import CommentBord from "@/components/WebComponents/CommentBord";
+import Image from "next/image";
 
 export default function BlogDetails({ params }: BlogDetailsProps) {
 
@@ -36,7 +37,7 @@ export default function BlogDetails({ params }: BlogDetailsProps) {
   return (
     <div className="container mx-auto pt-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full md:w-[50%] lg:w-[100%] text-center py-5 mx-auto my-4">
-        <img src={imageUrl} alt={blog.title} className="w-full h-auto rounded-lg shadow-md" />
+        <Image width={600} height={10} src={imageUrl} alt={blog.title} className="w-full  object-cover h-auto rounded-lg shadow-md" />
       </div>
 
       <div>

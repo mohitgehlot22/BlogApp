@@ -46,6 +46,7 @@ import {
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Comment } from "@/types/definition";
+import Image from "next/image";
 
 const formSchema = z.object({
   author: z.string().nonempty(),
@@ -165,10 +166,10 @@ export default function CommentBord() {
                 <div className="flex justify-between">
                   <div className="flex w-[70%] items-center">
                     <div className="m-2">
-                      <img
+                      <Image
                         src="/image/Profile.jpg"
-                        width={"50px"}
-                        height={"50px"}
+                        width={50}
+                        height={50}
                         className="rounded-full"
                         alt="User Avatar"
                       />
@@ -251,10 +252,10 @@ export default function CommentBord() {
       </div>
       <div className="w-full bg-orange-500 rounded-sm border-4 my-8 shadow-2xl  lg:p-10 p-2">
         <div className="flex items-center">
-          <img
+          <Image
             src="/image/message_9351583.png"
-            width={"50px"}
-            height={"30px"}
+            width={50}
+            height={30}
             alt="not-found"
           />
           <h1 className="lg:text-[35px] text-[17px] text-white ps-10 font-semibold">

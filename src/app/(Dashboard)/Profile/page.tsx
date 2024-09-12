@@ -1,4 +1,4 @@
-import ProfileViewPort from "@/components/DashboardComponents/ProfileViewPort";
+import { ProfileViewPort } from "@/components/DashboardComponents/ProfileViewPort";
 
 export default function page() {
 

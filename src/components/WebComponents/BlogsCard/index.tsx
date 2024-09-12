@@ -23,6 +23,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import TopButton from "../TopButton";
+import Image from "next/image";
 
 export default function BlogCard() {
   const [blogs, setBlogs] = useState<BlogData[] | null>(null);
@@ -66,7 +67,6 @@ export default function BlogCard() {
           console.error(error);
         });
     } else {
-      // Re-fetch the initial blog list when search value is cleared
       axios
         .get(`/api/BlogsPost?page=${currentPage}&limit=${limit}`)
         .then((res) => {
@@ -103,10 +103,12 @@ export default function BlogCard() {
               <Link href={`/Blogs/${values.id}`}>
                 <Card className="h-full bg-white shadow-md rounded-lg overflow-hidden">
                   <CardHeader>
-                    <img
+                    <Image
                       className="w-full h-auto object-cover"
                       src={imageUrl}
-                      alt=""
+                      alt="not-found"
+                      width={500}
+                      height={500}
                     />
                     <CardTitle>{values.title}</CardTitle>
                     <CardDescription>

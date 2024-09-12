@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Profile, profileName } from "@/types/definition";
 import axios from "axios";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
@@ -41,10 +41,12 @@ export default function UserProfile({ Name }: profileName) {
     <>
       <div className="mt-20 relative z-0 border-t-4 rounded border-orange-500">
         <div className="border-4 border-orange-500  rounded-full absolute top-[-80px] start-[25%] lg:start-[44%] bg-white shadow-2xl">
-          <img
+          <Image
             src={imageUrl || '/image/Profile.jpg'}
             className="object-cover w-[140px] h-[140px] rounded-full"
             alt="Profile"
+            width={800}
+            height={800}
           />
         </div>
         <h1 className="text-center py-6 capitalize lg:text-[25px] sm:text-[18px] font-bold mt-16">
@@ -63,33 +65,33 @@ export default function UserProfile({ Name }: profileName) {
         </p>
         <div className="flex py-5 justify-center">
           <Link href={user.facebookurl || '#'} target="_blank" rel="noopener noreferrer" className="mx-3 rounded-full w-[60px] h-[60px]">
-            <img
-              width={"35px"}
-              height={'35px'}
+            <Image
+              width={35}
+              height={35}
               src="/image/facebook_5968764.png"
               alt="Facebook"
             />
           </Link>
           <Link href={user.instagramurl || '#'} target="_blank" rel="noopener noreferrer" className="mx-3 rounded-full w-[60px] h-[60px]">
-            <img
-              width={"35px"}
-              height={'35px'}
+            <Image
+              width={35}
+              height={35}
               src="/image/instagram_2111463.png"
               alt="Instagram"
             />
           </Link>
           <Link href={user.twitterurl || '#'} target="_blank" rel="noopener noreferrer" className="mx-3 rounded-full w-[60px] h-[60px]">
-            <img
-              width={"35px"}
-              height={'35px'}
+            <Image
+              width={35}
+              height={35}
               src="/image/letter-x_9862814 (1).png"
               alt="Twitter"
             />
           </Link>
           <Link href={user.youtubeurl || '#'} target="_blank" rel="noopener noreferrer" className="mx-3 rounded-full w-[60px] h-[60px]">
-            <img
-              width={"35px"}
-              height={'35px'}
+            <Image
+              width={35}
+              height={35}
               src="/image/youtube_3938026.png"
               alt="YouTube"
             />

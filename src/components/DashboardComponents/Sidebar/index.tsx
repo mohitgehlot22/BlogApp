@@ -2,7 +2,6 @@
 import { RiCloseLargeFill } from "react-icons/ri";
 import { FaBars, FaSignOutAlt } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
-import { MdDashboard } from "react-icons/md";
 import { IoPersonAdd, IoCreateSharp, IoSettingsSharp } from "react-icons/io5";
 import { GrView } from "react-icons/gr";
 import Link from "next/link";

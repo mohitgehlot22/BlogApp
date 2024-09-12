@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import Link from "next/link";
 
 export default async function Home() {
@@ -16,7 +16,7 @@ export default async function Home() {
             Explore All Blogs
       </Link>
       <div className="flex justify-center my-9"> 
-       <img src="/image/blog.jpeg" className="w-[500px] mt-5 h-[350px]" alt="" />
+       <Image src="/image/blog.jpeg" width={500} height={350} className="sm:w-[200px] mt-5 sm:h-[150px]" alt="" />
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ import {
 import { BlogData } from "@/types/definition";
 import Link from "next/link";
 import TopButton from "../TopButton";
+import Image from "next/image";
 
 export default function FindCategorise() {
   const [categories, setCategories] = useState<string[]>([]);
@@ -75,7 +76,9 @@ export default function FindCategorise() {
                   <Link href={`/Blogs/${post.id}`}>
                     <Card className="h-full bg-white shadow-md rounded-lg overflow-hidden">
                       <CardHeader>
-                        <img
+                        <Image
+                        width={500}
+                        height={500}
                           className="w-full h-auto object-cover"
                           src={imageUrl}
                           alt={post.title}
@@ -117,10 +120,12 @@ export default function FindCategorise() {
                     <Link href={`/Blogs/${post.id}`}>
                       <Card className="h-full bg-white shadow-md rounded-lg overflow-hidden">
                         <CardHeader>
-                          <img
+                          <Image
                             className="w-full h-auto object-cover"
                             src={imageUrl}
                             alt={post.title}
+                            width={500}
+                            height={500}
                           />
                           <CardTitle className="text-xl font-semibold mt-2">
                             {post.title}

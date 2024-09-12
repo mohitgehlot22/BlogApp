@@ -1,6 +1,5 @@
 "use client";
-
-import { Profile } from "@/types/definition";
+import { Profile, profileName } from "@/types/definition";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
@@ -9,8 +8,9 @@ import LoadingSpinner from "../Loadingspinner";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
-export default function ProfileViewPort() {
+export  const  ProfileViewPort = ()=> {
   const [profileData, setProfileData] = useState<Profile | null>(null);
   const { data: session, status } = useSession();
   const router = useRouter()
@@ -55,14 +55,18 @@ export default function ProfileViewPort() {
     <>
       <section className="w-full overflow-hidden dark:bg-gray-900">
         <div className="flex flex-col">
-          <img
-            src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHw5fHxjb3ZlcnxlbnwwfDB8fHwxNzEwNzQxNzY0fDA&ixlib=rb-4.0.3&q=80&w=1080"
+          <Image
+            width={500}
+            height={800}
+            src="/image/ProfileBack.jpg"
             alt="User Cover"
             className="w-full xl:h-[20rem] lg:h-[18rem] md:h-[16rem] sm:h-[14rem] xs:h-[11rem]"
           />
 
           <div className="sm:w-[80%] xs:w-[90%] mx-auto flex">
-            <img
+            <Image
+              width={500}
+              height={800}
               src={imageUrl || "/image/Profile.jpg"}
               alt="User Profile"
               className="rounded-md lg:w-[12rem] lg:h-[12rem] md:w-[10rem] md:h-[10rem] sm:w-[8rem] sm:h-[8rem] xs:w-[7rem] xs:h-[7rem] outline outline-2 outline-offset-2 outline-blue-500 relative lg:bottom-[5rem] sm:bottom-[4rem] xs:bottom-[3rem]"
@@ -113,22 +117,22 @@ export default function ProfileViewPort() {
             <div className="fixed right-2 bottom-20 flex flex-col rounded-sm bg-gray-200 text-gray-500 dark:bg-gray-200/80 dark:text-gray-700 hover:text-gray-600 hover:dark:text-gray-400">
               <Link href={profileData.instagramurl || "/"}>
                 <div className="p-2 hover:text-primary hover:dark:text-primary">
-                  <img src="/image/instagram_2111463.png" width={"25px"} height={'20px'} alt="" />
+                  <Image src="/image/instagram_2111463.png" width={25} height={20} alt="not-found" />
                 </div>
               </Link>
               <Link href={profileData.twitterurl || "/"}>
                 <div className="p-2 hover:text-primary hover:dark:text-primary">
-                  <img src="/image/letter-x_9862814 (1).png" width={'25px'} height={'20px'} alt="" />
+                  <Image src="/image/letter-x_9862814 (1).png" width={25} height={20} alt="not-found" />
                 </div>
               </Link>
               <Link href={profileData.facebookurl || '/'}>
                 <div className="p-2 hover:text-blue-500 hover:dark:text-blue-500">
-                  <img src="/image/facebook_5968764.png" width={'25px'} height={'20px'} alt="" />
+                  <Image src="/image/facebook_5968764.png" width={25} height={20} alt="not-found" />
                 </div>
               </Link>
               <Link href={profileData.youtubeurl || '/'}>
                 <div className="p-2 hover:text-primary hover:dark:text-primary">
-                  <img src="/image/youtube_3938026.png" width={'25px'} height={'20px'} alt="" />
+                  <Image src="/image/youtube_3938026.png" width={25} height={20} alt="not-found" />
                 </div>
               </Link>
             </div>
