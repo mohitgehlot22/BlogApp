@@ -16,6 +16,7 @@ export interface BlogData {
   export interface BlogDataType  {
     id: string;
     title: string;
+    email : string ;
     createdAt: string;
     updatedAt: string;
     category: string;

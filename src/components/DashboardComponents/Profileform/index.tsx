@@ -106,6 +106,7 @@ export default function ProfileFrom() {
           toast.error(res.data.message);
         } else {
           toast.success(res.data.message);
+          router.push('/Profile')
         }
       })
       .catch((error) => {

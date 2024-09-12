@@ -1,4 +1,14 @@
-"use client";
+'use client';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useForm, FormProvider } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 import {
   FormControl,
@@ -7,20 +17,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { FormProvider, useForm } from "react-hook-form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { error } from "console";
-import { useSession } from "next-auth/react";
 
 // Define form schema
 const FormSchema = z.object({
@@ -30,7 +29,7 @@ const FormSchema = z.object({
   category: z.string().nonempty("Category is required"),
   writerName: z.string().nonempty("Writer name is required"),
   image: z.instanceof(File).optional(),
-  email: z.string().email("Email is Invailid !"),
+  email: z.string().email("Email is Invalid!"),
 });
 
 // Define form data type
@@ -40,7 +39,7 @@ export default function CreateBlogsForm() {
 
   const searchParams = useSearchParams();
   const postId = searchParams.get("post");
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
 
   if (!session) {
@@ -56,7 +55,7 @@ export default function CreateBlogsForm() {
       category: "",
       writerName: "",
       email: session?.user.email,
-      image: undefined, // Ensure default value is undefined
+      image: undefined,
     },
   });
 
@@ -71,15 +70,14 @@ export default function CreateBlogsForm() {
             descriptions: res.data.descriptions || "",
             category: res.data.category || "",
             writerName: res.data.writerName || "",
-            image: undefined, // Reset image field
+            image: undefined,
           });
         })
         .catch((error) => console.error("Failed to fetch blog data:", error));
     }
-  }, [postId]);
+  }, [postId, form.reset]); // Use form.reset as the dependency
 
   const handleSubmit = async (data: FormData) => {
-
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("shotDescriptions", data.shotDescriptions);
@@ -89,32 +87,22 @@ export default function CreateBlogsForm() {
     formData.append("email", data.email);
 
     if (data.image) {
-      formData.append("image", data.image); // Append the image file
+      formData.append("image", data.image);
     }
 
     try {
       if (postId) {
-        axios
-          .put(`/api/BlogsPost?id=${postId}`, formData)
+        await axios.put(`/api/BlogsPost?id=${postId}`, formData)
           .then((res) => {
             toast.success(res.data.message);
             if (res.data.status === 200) {
               router.push("/ViewBlogs");
             }
-          })
-          .catch((error) => {
-            console.log(error.message);
-            toast.error("something went wrong !");
           });
       } else {
-        axios
-          .post(`/api/BlogsPost`, formData)
+        await axios.post(`/api/BlogsPost`, formData)
           .then((res) => {
             toast.success(res.data.message);
-          })
-          .catch((error) => {
-            console.log(error.message);
-            toast.error("something went wrong !");
           });
         form.reset();
       }

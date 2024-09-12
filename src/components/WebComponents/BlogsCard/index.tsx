@@ -1,27 +1,12 @@
-"use client";
-import LoadingSpinner from "@/components/DashboardComponents/Loadingspinner";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-
-import { BlogData } from "@/types/definition";
-import axios from "axios";
-import Link from "next/link";
+'use client'
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { BlogData } from "@/types/definition";
+import LoadingSpinner from "@/components/DashboardComponents/Loadingspinner";
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import Link from "next/link";
 import TopButton from "../TopButton";
 import Image from "next/image";
 
@@ -29,8 +14,21 @@ export default function BlogCard() {
   const [blogs, setBlogs] = useState<BlogData[] | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [SearchValu, SetSearchValue] = useState<String>("");
+  const [SearchValu, SetSearchValue] = useState<string>(""); // Note: Changed type to `string`
   const limit = 6;
+
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+  
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   useEffect(() => {
     axios
@@ -42,19 +40,7 @@ export default function BlogCard() {
       .catch((error) => {
         console.error(error);
       });
-  }, [currentPage]);
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
+  }, [currentPage]); // Add `currentPage` to the dependency array
 
   useEffect(() => {
     if (SearchValu.trim() !== "") {
@@ -76,7 +62,7 @@ export default function BlogCard() {
           console.error(error);
         });
     }
-  }, [SearchValu]);
+  }, [SearchValu, currentPage]); // Add `SearchValu` and `currentPage` to the dependency array
 
   if (blogs === null) {
     return <LoadingSpinner />;
@@ -162,3 +148,6 @@ export default function BlogCard() {
     </>
   );
 }
+
+
+

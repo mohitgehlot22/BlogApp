@@ -18,9 +18,9 @@ export default function InfoPage() {
           <h2 className="text-xl sm:text-2xl font-semibold mb-2">Steps to Create a Blog Post</h2>
           <ol className="list-decimal pl-4 sm:pl-5">
             <li className="mb-2 text-sm sm:text-base">Sign-in to your account.</li>
-            <li className="mb-2 text-sm sm:text-base">Navigate to the "Create Blog Post" section.</li>
+            <li className="mb-2 text-sm sm:text-base">Navigate to the &quot;Create Blog Post&quot; section.</li>
             <li className="mb-2 text-sm sm:text-base">Fill in the required fields: Title, Category, and Content.</li>
-            <li className="mb-2 text-sm sm:text-base">Click the "Publish Blog Post" button to submit your post.</li>
+            <li className="mb-2 text-sm sm:text-base">Click the &quot;Publish Blog Post&quot; button to submit your post.</li>
             <li className="text-sm sm:text-base">Review your post in the dashboard to ensure everything looks good.</li>
           </ol>
         </section>

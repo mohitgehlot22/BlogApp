@@ -25,14 +25,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 
 import React, { useEffect, useState, FormEvent } from "react";
 import { MoreHorizontal } from "lucide-react";
@@ -44,40 +36,32 @@ import { Input } from "@/components/ui/input";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TopButton from "@/components/WebComponents/TopButton";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { Blog } from "@prisma/client";
+import { useSession } from "next-auth/react"
 
 export default function ViewBlogsData() {
+
   const [BlogData, SetBlogData] = useState<BlogDataType[]>([]);
   const [DeleteId, SetDeleteId] = useState<string | null>(null);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
-  const [CurrentPage, SetCurrentPage] = useState(1);
   const [Searchvalue, Setsearchvalue] = useState<string>("");
-  const [totalPages, setTotalPages] = useState(1);
   const [Categories, setCategories] = useState<string[]>([]);
   const [CategoriesValue, setCategoriesValue] = useState("All");
-  const limit = 10;
-  const { data: session, status } = useSession();
-  const router = useRouter();
+  const { data: session } = useSession();
 
   const email = session?.user.email;
 
-  if (!session) {
-    router.push("/Sign-in");
-  }
-
-  const ViewBlogs = (page: number) => {
+  const ViewBlogs = () => {
     axios
-      .get(`/api/BlogsPost?page=${page}&limit=${limit}`)
+      .get(`/api/BlogsPost?limit=1000`)
       .then((res) => {
-        SetBlogData(
-          res.data.data.filter((value: BlogData) => value.email == email)
+        const filteredBlogs = res.data.data.filter(
+          (value: BlogData) => value.email === email
         );
-        setTotalPages(res.data.pagination.totalPages);
+        SetBlogData(filteredBlogs);
       })
       .catch((error) => {
-        console.log(error);
+        console.log("Error fetching blogs:", error);
+        toast.error("Error fetching blog data!");
       });
   };
 
@@ -88,29 +72,13 @@ export default function ViewBlogsData() {
         .then(() => {
           setOpenAlert(false);
           SetDeleteId(null);
-          ViewBlogs(CurrentPage);
+          ViewBlogs(); // Refresh blog data
           toast.success("Blog deleted successfully!");
         })
         .catch((error) => {
           console.log(error);
           toast.error("Error deleting blog!");
         });
-    }
-  };
-
-  const PreviousPage = () => {
-    if (CurrentPage > 1) {
-      SetCurrentPage(CurrentPage - 1);
-    } else {
-      toast.error("You are already on the first page!");
-    }
-  };
-
-  const NextPage = () => {
-    if (CurrentPage < totalPages) {
-      SetCurrentPage(CurrentPage + 1);
-    } else {
-      toast.error("You are on the last page!");
     }
   };
 
@@ -133,7 +101,7 @@ export default function ViewBlogsData() {
   }, [CategoriesValue]);
 
   useEffect(() => {
-    ViewBlogs(CurrentPage);
+    ViewBlogs();
     axios
       .get(`/api/Categories`)
       .then((res) => {
@@ -142,7 +110,7 @@ export default function ViewBlogsData() {
       .catch((error) => {
         console.log(error);
       });
-  }, [CurrentPage]);
+  }, []);
 
   useEffect(() => {
     if (Searchvalue) {
@@ -157,14 +125,14 @@ export default function ViewBlogsData() {
           console.log(error);
         });
     } else {
-      ViewBlogs(CurrentPage);
+      ViewBlogs();
     }
-  }, [Searchvalue, CurrentPage]);
+  }, [Searchvalue]);
 
-  return session ? (
+  return  (
     <>
       <TopButton />
-      <div className="w-full p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md">
+      <div className="w-full h-screen p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md">
         {/* search section */}
         <form className="flex items-center justify-between py-4 mb-4">
           <Input
@@ -284,28 +252,6 @@ export default function ViewBlogsData() {
           )}
         </div>
 
-        {/* pagination */}
-        <Pagination className="py-5">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                className="cursor-pointer"
-                onClick={PreviousPage}
-              />
-            </PaginationItem>
-            {Array.from({ length: totalPages }, (_, i) => (
-              <PaginationItem key={i}>
-                <PaginationLink onClick={() => SetCurrentPage(i + 1)}>
-                  {i + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext className="cursor-pointer" onClick={NextPage} />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-
         {/* AlertDialog Component */}
         <AlertDialog open={openAlert} onOpenChange={setOpenAlert}>
           <AlertDialogContent>
@@ -329,7 +275,5 @@ export default function ViewBlogsData() {
         <ToastContainer />
       </div>
     </>
-  ) : (
-    router.push("/Sign-in")
-  );
+  ) 
 }

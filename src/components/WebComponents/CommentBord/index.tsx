@@ -1,5 +1,3 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -30,7 +28,7 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import axios from "axios";
 import { MoreHorizontal } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { MdDelete, MdOutlineEdit } from "react-icons/md";
 import TopButton from "../TopButton";
 import {
@@ -63,7 +61,8 @@ export default function CommentBord() {
   const [OpenAlert, setOpenAlert] = useState(false);
   const [EditData, SetEditData] = useState<Comment | null>(null);
 
-  const ViewComments = () => {
+  // Memoize ViewComments function
+  const ViewComments = useCallback(() => {
     axios
       .get(`/api/comments?blogId=${id}`)
       .then((res) => {
@@ -76,13 +75,12 @@ export default function CommentBord() {
       .catch((error: unknown) => {
         console.log(error);
       });
-  };
-
-  useEffect(() => {
-    ViewComments();
   }, [id]);
 
-
+  // Use ViewComments as a dependency in useEffect
+  useEffect(() => {
+    ViewComments();
+  }, [ViewComments]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -94,6 +92,7 @@ export default function CommentBord() {
     },
   });
 
+  // Use EditData and id as dependencies
   useEffect(() => {
     if (EditData) {
       form.reset({
@@ -103,31 +102,31 @@ export default function CommentBord() {
         blogId: id,
       });
     }
-  }, [EditData]);
+  }, [EditData, id, form]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       if (EditData) {
-        await axios.put(`/api/comments?UpDateComment=${EditData.id}`, values).then((res)=>{
-          if(res.data.status==200){
+        await axios.put(`/api/comments?UpDateComment=${EditData.id}`, values).then((res) => {
+          if (res.data.status === 200) {
             toast.success("Comment updated successfully!");
-          }else{
-            toast.error(res.data.message)
+          } else {
+            toast.error(res.data.message);
           }
-        })
-       
+        });
+
         SetEditData(null);
       } else {
         await axios.post(`/api/comments`, values);
         toast.success("Comment added successfully!");
       }
-  
+
       ViewComments();
     } catch (error) {
       toast.error("Something went wrong!");
       console.error(error);
     }
-  
+
     form.reset({
       author: '',
       email: '',
@@ -135,16 +134,14 @@ export default function CommentBord() {
       blogId: id,
     });
   };
-  
-  
 
-  const HandleDelete = (CommentDelete: String ) => {
+  const HandleDelete = (CommentDelete: string) => {
     if (CommentDelete) {
       axios
         .delete(`/api/comments?CommentId=${CommentDelete}`)
         .then((res) => {
           ViewComments();
-          toast.error(res.data.message)
+          toast.error(res.data.message);
         })
         .catch((error: unknown) => {
           console.log(error);
@@ -159,7 +156,7 @@ export default function CommentBord() {
         <h1 className="lg:text-[25px] sm:txet-[18px] bottom-0 ps-10 font-bold">
           {comments.length} Comments
         </h1>
-        {comments.map((value : Comment, index:number) => (
+        {comments.map((value: Comment, index: number) => (
           <div key={index}>
             <Card className="my-10 lg:w-[70%] sm:w-full mx-auto">
               <CardHeader className="p-2">
@@ -296,7 +293,7 @@ export default function CommentBord() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="lg:text-[20px] text-[15px] font-bold text-white">
-                    email{" "}
+                    Email{" "}
                     <span className="font-bold lg:text-[35px] text-[20px] text-red-500">
                       *
                     </span>
@@ -346,7 +343,7 @@ export default function CommentBord() {
           </form>
         </Form>
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </>
   );
 }

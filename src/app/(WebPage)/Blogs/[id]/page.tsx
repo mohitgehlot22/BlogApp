@@ -8,21 +8,20 @@ import CommentBord from "@/components/WebComponents/CommentBord";
 import Image from "next/image";
 
 export default function BlogDetails({ params }: BlogDetailsProps) {
-
   const [blog, setBlog] = useState<BlogData | null>(null);
 
-  const fetchBlogData = () => {
-    axios
-      .get(`/api/SingleBlog/${params.id}`)
-      .then((res) => {
-        setBlog(res.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
   useEffect(() => {
+    const fetchBlogData = () => {
+      axios
+        .get(`/api/SingleBlog/${params.id}`)
+        .then((res) => {
+          setBlog(res.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
+
     if (params && params.id) {
       fetchBlogData();
     }
@@ -32,18 +31,24 @@ export default function BlogDetails({ params }: BlogDetailsProps) {
     return <LoadingSpinner />;
   }
 
-  const imageUrl = blog.image.startsWith('/public') ? blog.image.slice(7) : blog.image;
+  const imageUrl = blog.image.startsWith("/public") ? blog.image.slice(7) : blog.image;
 
   return (
     <div className="container mx-auto pt-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full md:w-[50%] lg:w-[100%] text-center py-5 mx-auto my-4">
-        <Image width={600} height={10} src={imageUrl} alt={blog.title} className="w-full  object-cover h-auto rounded-lg shadow-md" />
+        <Image
+          width={600}
+          height={10}
+          src={imageUrl}
+          alt={blog.title}
+          className="w-full  object-cover h-auto rounded-lg shadow-md"
+        />
       </div>
 
       <div>
         <div className="flex flex-col md:flex-row justify-between items-center md:items-start">
           <h1 className="text-[18px] md:text-[24px] capitalize font-bold mb-2 md:mb-0">
-            Title :  {blog.title}
+            Title : {blog.title}
           </h1>
           <p className="text-[15px] md:text-[17px] font-semibold py-2 md:py-0">
             Published on {new Date(blog.createdAt).toLocaleDateString()}
