@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     const uniqueCategories = Array.from(
       new Set(
         categories
-          .map((item) => item.category)
+          .map((item:any) => item.category)
           .filter((category): category is string => typeof category === 'string' && category.trim() !== '')
           .map((category) => category.trim().toLowerCase()) 
       )
