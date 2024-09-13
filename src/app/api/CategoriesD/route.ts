@@ -5,20 +5,26 @@ const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
   try {
+    // Define the type for each item in the categories array
+    type CategoryItem = { category: string | null };
 
-    const categories = await prisma.blog.findMany({
+    // Fetch categories from the database
+    const categories: CategoryItem[] = await prisma.blog.findMany({
       select: {
         category: true,
       },
       distinct: ['category'],
     });
 
+    // Ensure the items in the categories array are typed correctly
     const uniqueCategories = Array.from(
       new Set(
         categories
-          .map((item:any) => item.category)
-          .filter((category): category is string => typeof category === 'string' && category.trim() !== '')
-          .map((category) => category.trim().toLowerCase()) 
+          .map((item: CategoryItem) => item.category) // Explicitly typing 'item'
+          .filter((category): category is string => {
+            return typeof category === "string" && category.trim() !== "";
+          })
+          .map((category) => category.trim().toLowerCase())
       )
     );
 
@@ -27,7 +33,6 @@ export async function GET(request: NextRequest) {
       status: 200,
       success: true,
     });
-    
   } catch (error) {
     console.error("Error fetching unique categories:", error);
     return NextResponse.json({
