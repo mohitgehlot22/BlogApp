@@ -5,11 +5,8 @@ const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
   try {
-    // Define the type for each item in the categories array
-    type CategoryItem = { category: string | null };
-
-    // Fetch categories from the database
-    const categories: CategoryItem[] = await prisma.blog.findMany({
+    // Fetch categories from the database with explicit typing
+    const categories = await prisma.blog.findMany({
       select: {
         category: true,
       },
@@ -20,7 +17,7 @@ export async function GET(request: NextRequest) {
     const uniqueCategories = Array.from(
       new Set(
         categories
-          .map((item: CategoryItem) => item.category) // Explicitly typing 'item'
+          .map((item: { category: string | null }) => item.category) // Explicitly type 'item'
           .filter((category): category is string => {
             return typeof category === "string" && category.trim() !== "";
           })
