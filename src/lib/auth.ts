@@ -1,3 +1,9 @@
+import NextAuth, { NextAuthOptions } from "next-auth"; // <-- Import NextAuthOptions
+import CredentialsProvider from "next-auth/providers/credentials";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { compare } from "bcryptjs";
+import { db } from "@/lib/db"; // Assuming your Prisma db instance is here
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
   secret: process.env.AUTH_SECRET,
@@ -43,10 +49,10 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async session({ session, token }) {
-      session.user.email = token.email;  // Corrected callback to add email to session
+      session.user.email = token.email;  // Add email to session
       return session;
     },
-  }, // <-- Add this comma here to fix the error
+  },
 };
 
 export default NextAuth(authOptions);
