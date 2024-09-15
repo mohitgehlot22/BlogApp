@@ -54,7 +54,7 @@ export default function CreateBlogsForm() {
       descriptions: "",
       category: "",
       writerName: "",
-      email: session?.email || "",
+      email: session?.user?.email || "", // Access email from session.user
       image: undefined,
     },
   });
@@ -75,7 +75,7 @@ export default function CreateBlogsForm() {
         })
         .catch((error) => console.error("Failed to fetch blog data:", error));
     }
-  }, [postId, form]); // Add 'form' to the dependency array
+  }, [postId, form]);
 
   const handleSubmit = async (data: FormData) => {
     const formData = new FormData();
