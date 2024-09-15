@@ -1,8 +1,8 @@
-import NextAuth, { NextAuthOptions } from "next-auth"; // <-- Import NextAuthOptions
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { compare } from "bcryptjs";
-import { db } from "@/lib/db"; // Assuming your Prisma db instance is here
+import { db } from "@/lib/db"; // Adjust the import path if needed
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
@@ -41,15 +41,23 @@ export const authOptions: NextAuthOptions = {
 
         return {
           id: existingUser.id,
-          username: existingUser.username,
+          username: existingUser.username,  // Ensure username is returned
           email: existingUser.email,
         };
       },
     }),
   ],
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.username = user.username;  // Assign username to token
+        token.email = user.email;  // Assign email to token
+      }
+      return token;
+    },
     async session({ session, token }) {
-      session.user.email = token.email;  // Add email to session
+      session.user.username = token.username;  // Assign username to session
+      session.user.email = token.email;  // Assign email to session
       return session;
     },
   },
