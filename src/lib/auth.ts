@@ -1,8 +1,25 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { db } from "./db";
 import { compare } from "bcrypt";
+
+// Extending the user object to include the username
+declare module "next-auth" {
+  interface User {
+    username: string;
+  }
+
+  interface Session {
+    user: {
+      username: string;
+    };
+  }
+
+  interface JWT {
+    username: string;
+  }
+}
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
@@ -21,7 +38,6 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Invalid credentials");
         }
@@ -51,13 +67,13 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.username = user.username;
+        token.username = user.username; // No more type error
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.username = token.username;
+        session.user.username = token.username; // No more type error
       }
       return session;
     },
