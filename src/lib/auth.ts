@@ -65,19 +65,10 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.username = user.username; // No more type error
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.username = token.username; // No more type error
-      }
-      return session;
-    },
-  },
-};
+  async session({ session, token }) {
+    session.user.email = token.email;
+    return session;
+  }
+}
 
 export default NextAuth(authOptions);
