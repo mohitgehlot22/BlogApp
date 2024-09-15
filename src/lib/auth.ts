@@ -1,26 +1,3 @@
-import NextAuth, { NextAuthOptions, User } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { db } from "./db";
-import { compare } from "bcrypt";
-
-// Extending the user object to include the username
-declare module "next-auth" {
-  interface User {
-    username: string;
-  }
-
-  interface Session {
-    user: {
-      username: string;
-    };
-  }
-
-  interface JWT {
-    username: string;
-  }
-}
-
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
   secret: process.env.AUTH_SECRET,
@@ -53,7 +30,7 @@ export const authOptions: NextAuthOptions = {
         const passwordMatch = await compare(credentials.password, existingUser.password);
 
         if (!passwordMatch) {
-          throw new Error("Incorrect password !");
+          throw new Error("Incorrect password!");
         }
 
         return {
@@ -65,10 +42,11 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-  async session({ session, token }) {
-    session.user.email = token.email;
-    return session;
-  }
-}
+    async session({ session, token }) {
+      session.user.email = token.email;  // Corrected callback to add email to session
+      return session;
+    },
+  }, // <-- Add this comma here to fix the error
+};
 
 export default NextAuth(authOptions);
